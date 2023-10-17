@@ -14,9 +14,12 @@
 		8052D2ED2ADE82D4008DD1D5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8052D2EB2ADE82D4008DD1D5 /* LaunchScreen.storyboard */; };
 		8052D2F52ADE8911008DD1D5 /* ChatItemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8052D2F42ADE8911008DD1D5 /* ChatItemCell.swift */; };
 		8052D2F92ADE8AF3008DD1D5 /* ChatRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8052D2F82ADE8AF3008DD1D5 /* ChatRepository.swift */; };
-		8052D2FB2ADE9185008DD1D5 /* ChatNavigationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8052D2FA2ADE9185008DD1D5 /* ChatNavigationViewController.swift */; };
-		80C834152ADEA894004ED942 /* ChatViewProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80C834142ADEA894004ED942 /* ChatViewProtocol.swift */; };
-		80C834172ADEA908004ED942 /* ChatInteractorProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80C834162ADEA908004ED942 /* ChatInteractorProtocol.swift */; };
+		80539C5E2AE16FDA00233294 /* DataFetchingDirection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80539C5D2AE16FD900233294 /* DataFetchingDirection.swift */; };
+		8079D4EE2AE0274800CFE409 /* ChatItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8079D4ED2AE0274800CFE409 /* ChatItem.swift */; };
+		8079D4F12AE02D0400CFE409 /* ChatBuilderProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8079D4F02AE02D0400CFE409 /* ChatBuilderProtocol.swift */; };
+		8079D4F32AE02D3100CFE409 /* ChatBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8079D4F22AE02D3100CFE409 /* ChatBuilder.swift */; };
+		8079D4FA2AE0698400CFE409 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8079D4FC2AE0698400CFE409 /* Localizable.strings */; };
+		8079D4FF2AE06A6600CFE409 /* String+localized.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8079D4FE2AE06A6600CFE409 /* String+localized.swift */; };
 		80C834192ADEA94E004ED942 /* ChatRepositoryProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80C834182ADEA94E004ED942 /* ChatRepositoryProtocol.swift */; };
 /* End PBXBuildFile section */
 
@@ -30,9 +33,13 @@
 		8052D2EE2ADE82D4008DD1D5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8052D2F42ADE8911008DD1D5 /* ChatItemCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatItemCell.swift; sourceTree = "<group>"; };
 		8052D2F82ADE8AF3008DD1D5 /* ChatRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRepository.swift; sourceTree = "<group>"; };
-		8052D2FA2ADE9185008DD1D5 /* ChatNavigationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatNavigationViewController.swift; sourceTree = "<group>"; };
-		80C834142ADEA894004ED942 /* ChatViewProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewProtocol.swift; sourceTree = "<group>"; };
-		80C834162ADEA908004ED942 /* ChatInteractorProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatInteractorProtocol.swift; sourceTree = "<group>"; };
+		80539C5D2AE16FD900233294 /* DataFetchingDirection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataFetchingDirection.swift; sourceTree = "<group>"; };
+		8079D4ED2AE0274800CFE409 /* ChatItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatItem.swift; sourceTree = "<group>"; };
+		8079D4F02AE02D0400CFE409 /* ChatBuilderProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBuilderProtocol.swift; sourceTree = "<group>"; };
+		8079D4F22AE02D3100CFE409 /* ChatBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBuilder.swift; sourceTree = "<group>"; };
+		8079D4FB2AE0698400CFE409 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		8079D4FD2AE069EF00CFE409 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
+		8079D4FE2AE06A6600CFE409 /* String+localized.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+localized.swift"; sourceTree = "<group>"; };
 		80C834182ADEA94E004ED942 /* ChatRepositoryProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRepositoryProtocol.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -69,11 +76,12 @@
 				8052D2F72ADE8AE5008DD1D5 /* Repository */,
 				8052D2F62ADE8ADF008DD1D5 /* Chat */,
 				8052D2E02ADE82D3008DD1D5 /* AppDelegate.swift */,
-				8052D2FA2ADE9185008DD1D5 /* ChatNavigationViewController.swift */,
 				8052D2E22ADE82D3008DD1D5 /* SceneDelegate.swift */,
+				8079D4FC2AE0698400CFE409 /* Localizable.strings */,
 				8052D2E92ADE82D4008DD1D5 /* Assets.xcassets */,
 				8052D2EB2ADE82D4008DD1D5 /* LaunchScreen.storyboard */,
 				8052D2EE2ADE82D4008DD1D5 /* Info.plist */,
+				8079D4FE2AE06A6600CFE409 /* String+localized.swift */,
 			);
 			path = FakeChat;
 			sourceTree = "<group>";
@@ -81,8 +89,8 @@
 		8052D2F62ADE8ADF008DD1D5 /* Chat */ = {
 			isa = PBXGroup;
 			children = (
-				8052D2FE2ADE9B75008DD1D5 /* Interactor */,
-				8052D2FD2ADE9B6E008DD1D5 /* Presenter */,
+				8079D4EF2AE02CEE00CFE409 /* Builder */,
+				8079D4EC2AE0273100CFE409 /* Model */,
 				8052D2FC2ADE9B69008DD1D5 /* View */,
 			);
 			path = Chat;
@@ -102,24 +110,8 @@
 			children = (
 				8052D2FF2ADE9B89008DD1D5 /* Cell */,
 				8052D2E42ADE82D3008DD1D5 /* ChatViewController.swift */,
-				80C834142ADEA894004ED942 /* ChatViewProtocol.swift */,
 			);
 			path = View;
-			sourceTree = "<group>";
-		};
-		8052D2FD2ADE9B6E008DD1D5 /* Presenter */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Presenter;
-			sourceTree = "<group>";
-		};
-		8052D2FE2ADE9B75008DD1D5 /* Interactor */ = {
-			isa = PBXGroup;
-			children = (
-				80C834162ADEA908004ED942 /* ChatInteractorProtocol.swift */,
-			);
-			path = Interactor;
 			sourceTree = "<group>";
 		};
 		8052D2FF2ADE9B89008DD1D5 /* Cell */ = {
@@ -128,6 +120,24 @@
 				8052D2F42ADE8911008DD1D5 /* ChatItemCell.swift */,
 			);
 			path = Cell;
+			sourceTree = "<group>";
+		};
+		8079D4EC2AE0273100CFE409 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				80539C5D2AE16FD900233294 /* DataFetchingDirection.swift */,
+				8079D4ED2AE0274800CFE409 /* ChatItem.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		8079D4EF2AE02CEE00CFE409 /* Builder */ = {
+			isa = PBXGroup;
+			children = (
+				8079D4F02AE02D0400CFE409 /* ChatBuilderProtocol.swift */,
+				8079D4F22AE02D3100CFE409 /* ChatBuilder.swift */,
+			);
+			path = Builder;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -172,6 +182,7 @@
 			knownRegions = (
 				en,
 				Base,
+				ru,
 			);
 			mainGroup = 8052D2D42ADE82D3008DD1D5;
 			productRefGroup = 8052D2DE2ADE82D3008DD1D5 /* Products */;
@@ -189,6 +200,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8052D2ED2ADE82D4008DD1D5 /* LaunchScreen.storyboard in Resources */,
+				8079D4FA2AE0698400CFE409 /* Localizable.strings in Resources */,
 				8052D2EA2ADE82D4008DD1D5 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -200,13 +212,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8052D2FB2ADE9185008DD1D5 /* ChatNavigationViewController.swift in Sources */,
-				80C834152ADEA894004ED942 /* ChatViewProtocol.swift in Sources */,
+				8079D4EE2AE0274800CFE409 /* ChatItem.swift in Sources */,
+				8079D4F32AE02D3100CFE409 /* ChatBuilder.swift in Sources */,
+				8079D4F12AE02D0400CFE409 /* ChatBuilderProtocol.swift in Sources */,
 				8052D2F52ADE8911008DD1D5 /* ChatItemCell.swift in Sources */,
+				8079D4FF2AE06A6600CFE409 /* String+localized.swift in Sources */,
 				8052D2E52ADE82D3008DD1D5 /* ChatViewController.swift in Sources */,
-				80C834172ADEA908004ED942 /* ChatInteractorProtocol.swift in Sources */,
 				8052D2E12ADE82D3008DD1D5 /* AppDelegate.swift in Sources */,
 				80C834192ADEA94E004ED942 /* ChatRepositoryProtocol.swift in Sources */,
+				80539C5E2AE16FDA00233294 /* DataFetchingDirection.swift in Sources */,
 				8052D2E32ADE82D3008DD1D5 /* SceneDelegate.swift in Sources */,
 				8052D2F92ADE8AF3008DD1D5 /* ChatRepository.swift in Sources */,
 			);
@@ -223,6 +237,15 @@
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
 		};
+		8079D4FC2AE0698400CFE409 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				8079D4FB2AE0698400CFE409 /* en */,
+				8079D4FD2AE069EF00CFE409 /* ru */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
@@ -231,6 +254,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -294,6 +318,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";

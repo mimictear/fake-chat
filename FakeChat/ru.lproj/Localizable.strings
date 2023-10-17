@@ -1,0 +1,10 @@
+/* 
+  Localizable.strings
+  FakeChat
+
+  Created by ANDREY VORONTSOV on 18.10.2023.
+  
+*/
+
+"chat" = "Чат";
+"barButton" = "Перейти к 1k";

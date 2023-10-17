@@ -9,12 +9,45 @@ import UIKit
 
 class ChatViewController: UIViewController {
     
-    private lazy var collectionView: UICollectionView = {
+    enum Section: Int {
+        case main = 0
+    }
+    
+    typealias DataSource = UICollectionViewDiffableDataSource<Section, ChatItem>
+    typealias Snapshot = NSDiffableDataSourceSnapshot<Section, ChatItem>
+    
+    /// a tuple that contains a frame (index - (index + offset)) in which position we have a gap
+    /// for example: [0...40] ...a gap is here... [980...1010]
+    private var gapFrame: (start: Int, end: Int)? = nil
+    
+    private let pageCount = 20
+    private let offsetBeforeFetching = 10
+    private let pinnedItemPosition = 1000
+    private var previousPresnetedCellIndex = 0
+    
+    private let viewPadding = CGFloat(16)
+    private let approximateCellHeight = CGFloat(100)
+    
+    private var items: [ChatItem] = []
+    private var isLoading = false
+    
+    var chatRepository: ChatRepositoryProtocol?
+    
+    var itemsCount: Int {
+        dataSource.snapshot().numberOfItems
+    }
+    
+    private lazy var collectionViewLayout: UICollectionViewFlowLayout = {
         let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
         layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
         layout.scrollDirection = .vertical
-        collectionView = .init(frame: .zero, collectionViewLayout: layout)
-        collectionView.dataSource = self
+        return layout
+    }()
+    
+    private lazy var collectionView: UICollectionView = {
+        collectionView = .init(frame: .zero, collectionViewLayout: collectionViewLayout)
+        collectionView.contentInset = UIEdgeInsets(top: viewPadding, left: viewPadding, bottom: viewPadding, right: viewPadding)
+        collectionView.dataSource = dataSource
         collectionView.delegate = self
         collectionView.register(ChatItemCell.self, forCellWithReuseIdentifier: ChatItemCell.cellID)
         collectionView.contentInsetAdjustmentBehavior = .always
@@ -22,15 +55,41 @@ class ChatViewController: UIViewController {
         return collectionView
     }()
     
-    private var items: [ChatItem] = []
-    private var isLoading = false
+    private lazy var dataSource: DataSource = {
+        let dataSource = DataSource(
+            collectionView: collectionView,
+            cellProvider: { (collectionView, indexPath, item) ->
+                UICollectionViewCell? in
+                let cell = collectionView.dequeueReusableCell(
+                    withReuseIdentifier: ChatItemCell.cellID,
+                    for: indexPath) as? ChatItemCell
+                cell?.setData(item)
+                return cell
+            })
+        return dataSource
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupViewController()
         setupViews()
-        
-        // TODO: fetch items from repository (call interactor.fetchData()) в него при старте подгружается 20 ячеек разной высоты
-        items = ChatRepository().getChatItems()
+        loadData(direction: .forward(start: 0, end: pageCount))
+    }
+}
+
+// MARK: - View
+
+extension ChatViewController {
+    
+    private func setupViewController() {
+        title = "chat".localized
+        view.backgroundColor = .systemBackground
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            title: "barButton".localized,
+            style: .plain,
+            target: self,
+            action: #selector(scrollToItem)
+        )
     }
     
     private func setupViews() {
@@ -45,59 +104,121 @@ class ChatViewController: UIViewController {
     }
 }
 
-extension ChatViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        items.count
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ChatItemCell.cellID, for: indexPath) as! ChatItemCell
-        cell.setData(text: items[indexPath.row].text)
-        return cell
-    }
+extension ChatViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let sectionInset = (collectionViewLayout as! UICollectionViewFlowLayout).sectionInset
-        let referenceHeight: CGFloat = 100
         let referenceWidth = collectionView.safeAreaLayoutGuide.layoutFrame.width
         - sectionInset.left
         - sectionInset.right
         - collectionView.contentInset.left
         - collectionView.contentInset.right
-        return CGSize(width: referenceWidth, height: referenceHeight)
-    }
-    
-    // prefetch
-    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        if indexPath.row == items.count - 10 && !self.isLoading {
-            loadMoreData()
-        }
-    }
-    
-    // TODO: scroll to 1000th position -> scrollToItem(at:at:animated:)
-}
-
-extension ChatViewController: ChatViewProtocol {
-    
-    func show(items: [ChatItem]) {
-        // TODO: append chat items
+        return CGSize(width: referenceWidth, height: approximateCellHeight)
     }
 }
 
-// MARK: - Fetch data
+// MARK: - Fetching Data in Both Directions
 
 extension ChatViewController {
     
-    private func loadMoreData() {
-        if !self.isLoading {
-            self.isLoading = true
-            DispatchQueue.global().async {
-                sleep(2)
-                let start = self.items.count
-                let end = start + 20
-                self.isLoading = false
-                    // TODO: load next 20
+    func collectionView(_ collectionView: UICollectionView,
+                        willDisplay cell: UICollectionViewCell,
+                        forItemAt indexPath: IndexPath) {
+        
+        if !isLoading {
+            
+            let isBackwardScrolling = indexPath.row < previousPresnetedCellIndex
+            
+            if isBackwardScrolling {
+                if indexPath.row > pageCount {
+                    let itemBeforeOffset = items[indexPath.row - offsetBeforeFetching]
+                    if let gapFrame, itemBeforeOffset.number == gapFrame.end {
+                        
+                        loadData(direction: .backward(start: gapFrame.end - pageCount, end: gapFrame.end - 1, beforeItem: itemBeforeOffset)) {
+                            
+                            self.gapFrame = (start: gapFrame.start, end: gapFrame.end - self.pageCount)
+                        }
+                    }
+                }
+            } else {
+                if indexPath.row == itemsCount - offsetBeforeFetching {
+                    let lastItem = dataSource.snapshot().itemIdentifiers(inSection: Section.main).last
+                    let lastItemNumber = lastItem == nil ? nil : (lastItem?.number ?? 0) + 1
+                    let start = lastItemNumber ?? itemsCount
+                    let end = start + pageCount
+                    loadData(direction: .forward(start: start, end: end))
+                }
+            }
+            previousPresnetedCellIndex = indexPath.row
+        }
+    }
+}
+
+// MARK: - Actions
+extension ChatViewController {
+
+    @objc
+    private func scrollToItem() {
+        
+        let lastIndex = itemsCount
+        let pinnedItem = items.first { $0.number == pinnedItemPosition }
+        if gapFrame == nil {
+            gapFrame = (start: lastIndex, end: pinnedItemPosition - pageCount)
+        }
+        if let pinnedItem, let pinnedItemIndex = dataSource.snapshot().indexOfItem(pinnedItem) {
+            scrollWithAnimation(to: pinnedItemIndex)
+        } else {
+            loadData(direction: .forward(start: pinnedItemPosition - pageCount, end: pinnedItemPosition + pageCount)) {
+                
+                self.scrollWithAnimation(to: lastIndex + self.pageCount)
+            }
+        }
+    }
+    
+    private func scrollWithAnimation(to index: Int) {
+        let indexPath = IndexPath(item: index, section: Section.main.rawValue)
+        collectionView.scrollToItem(at: indexPath, at: [.centeredHorizontally, .centeredVertically], animated: true)
+    }
+}
+
+// MARK: - Requesting Randomly Generated Data from Repository
+extension ChatViewController {
+    
+    private func loadData(direction: DataFetchingDirection, completion: (() -> Void)? = nil) {
+        guard let chatRepository else { return }
+        
+        if !isLoading {
+            isLoading = true
+            DispatchQueue.global().async { [weak self] in
+                
+                guard let self else { return }
+                
+                var snapshot: Snapshot? = nil
+                switch direction {
+                case .backward(let start, let end, let beforeItem):
+                    if start > 0 {
+                        if let beforeIndex = self.dataSource.snapshot().indexOfItem(beforeItem) {
+                            let newItems = chatRepository.getChatItems(range: start...end)
+                            self.items.insert(contentsOf: newItems, at: beforeIndex)
+                            snapshot = self.dataSource.snapshot()
+                            snapshot?.insertItems(newItems, beforeItem: beforeItem)
+                        }
+                    }
+                case .forward(let start, let end):
+                    let newItems = chatRepository.getChatItems(range: start...end)
+                    self.items.append(contentsOf: newItems)
+                    snapshot = Snapshot()
+                    snapshot?.appendSections([Section.main])
+                    snapshot?.appendItems(self.items, toSection: Section.main)
+                }
+                
+                DispatchQueue.main.async {
+                    if let snapshot {
+                        self.dataSource.apply(snapshot, animatingDifferences: true)
+                    }
+                    self.isLoading = false
+                    completion?()
+                }
             }
         }
     }
